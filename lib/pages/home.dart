@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -11,6 +14,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final amountController = TextEditingController();
+  void saveWater(String amount) async {
+    final url = Uri.parse(
+        'https://water-intaker-7e68b-default-rtdb.firebaseio.com/water.json');
+    var response = await http.post(url,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'amount': double.parse(amount),
+          'unit': 'ml',
+          'dateTime': DateTime.now().toString()
+        }));
+
+    if (response.statusCode == 200) {
+      print('Data saved');
+    } else {
+      print('Error saving data');
+    }
+  }
+
   void addWater() {
     showDialog(
         context: context,
@@ -37,14 +58,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
                     //save data to db
-                    // Add your save logic here
+                    saveWater(amountController.text);
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             ));
