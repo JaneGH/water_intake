@@ -6,6 +6,8 @@ import 'package:water_intake/components/water_intake_summary.dart';
 import 'package:water_intake/components/water_tile.dart';
 import 'package:water_intake/data/water_data.dart';
 import 'package:water_intake/model/water_model.dart';
+import 'package:water_intake/pages/about_screen.dart';
+import 'package:water_intake/pages/settings_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -113,7 +115,20 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: const [
             Icon(Icons.map),
           ],
-          title: const Text('Water'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Weekly: ',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Text('${value.calculateWeeklyWaterIntake(value)} ml',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(fontWeight: FontWeight.bold)),
+            ],
+          ),
         ),
         body: ListView(
           children: [
@@ -132,14 +147,44 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
           ],
         ),
-
-        // : const Center(
-        //     child: CircularProgressIndicator(),
-        //   ),
         backgroundColor: Theme.of(context).colorScheme.background,
         floatingActionButton: FloatingActionButton(
           onPressed: addWater,
           child: const Icon(Icons.add),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary),
+                  child: Text(
+                    'Water Intake',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                  )),
+              ListTile(
+                title: const Text('Settings'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingsScreen()));
+                },
+              ),
+              ListTile(
+                title: const Text('About'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AboutScreen()));
+                },
+              )
+            ],
+          ),
         ),
       ),
     );

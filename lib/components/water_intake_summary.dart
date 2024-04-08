@@ -8,6 +8,32 @@ class WaterSummary extends StatelessWidget {
   final DateTime startOfWeek;
   const WaterSummary({super.key, required this.startOfWeek});
 
+  double calculateMaxAmount(
+    WaterData waterData,
+    String sunday,
+    String monday,
+    String tuesday,
+    String wednsday,
+    String thursday,
+    String friday,
+    String saturday,
+  ) {
+    double? maxAmount = 100;
+    List<double> values = [
+      waterData.calculateDailyWaterSummary()[sunday] ?? 0,
+      waterData.calculateDailyWaterSummary()[monday] ?? 0,
+      waterData.calculateDailyWaterSummary()[tuesday] ?? 0,
+      waterData.calculateDailyWaterSummary()[wednsday] ?? 0,
+      waterData.calculateDailyWaterSummary()[thursday] ?? 0,
+      waterData.calculateDailyWaterSummary()[friday] ?? 0,
+      waterData.calculateDailyWaterSummary()[saturday] ?? 0
+    ];
+
+    values.sort();
+    maxAmount = values.last * 1.3;
+    return maxAmount == 0 ? 100 : maxAmount;
+  }
+
   @override
   Widget build(BuildContext context) {
     String sunday = convertDateTimeToString(startOfWeek.add(Duration(days: 0)));
@@ -25,7 +51,8 @@ class WaterSummary extends StatelessWidget {
         builder: (context, value, child) => SizedBox(
               height: 200,
               child: BarGraph(
-                maxY: 100,
+                maxY: calculateMaxAmount(value, sunday, monday, tuesday,
+                    wednsday, thursday, friday, saturday),
                 sunWaterAmt: value.calculateDailyWaterSummary()[sunday] ?? 0,
                 monWaterAmt: value.calculateDailyWaterSummary()[monday] ?? 0,
                 tueWaterAmt: value.calculateDailyWaterSummary()[tuesday] ?? 0,
